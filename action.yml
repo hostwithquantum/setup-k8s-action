@@ -1,0 +1,40 @@
+---
+name: 'setup-k8s-action'
+description: 'Setup k8s tools, config and populate KUBECONFIG env variable'
+inputs:
+  environment:
+    required: true
+    description: the environment to deploy to
+    type: choice
+    default: staging
+    options:
+      - staging
+      - production
+  config-production:
+    required: true
+    description: k8s configuration for production
+  config-staging:
+    required: true
+    description: k8s configuration for staging
+  location:
+    default: /kubeconfig
+    description: The location of the config
+runs:
+  using: "composite"
+  steps:
+    - uses: yokawasa/action-setup-kube-tools@v0.9.2
+      with:
+        kubectl: '1.27.5'
+        setup-tools: |
+          kubectl
+          helm
+    - run: 'echo "${{ inputs.config-production }}" > ${{ inputs.location }}'
+      if: inputs.environment == 'production'
+      shell: bash
+    - run: 'echo "${{ inputs.config-staging }}" > ${{ inputs.location }}'
+      if: inputs.environment == 'staging'
+      shell: bash
+    - run: echo 'KUBECONFIG=${{ inputs.location }}' >> $GITHUB_ENV
+      shell: bash
+    - run: cat $KUBECONFIG
+      shell: bash
