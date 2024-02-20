@@ -1,0 +1,48 @@
+name: ci
+
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: asdf-vm/actions/install@v3
+      with:
+        tool_versions: |
+          action-validator 0.5.1
+    - run: asdf reshim action-validator
+    - run: action-validator ./action.yml
+    - run: action-validator ./.github/workflows/ci.yml
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    name: test-${{ matrix.env }}
+    strategy:
+      matrix:
+        env:
+        - production
+        - staging
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./
+      with:
+        config-production: 'foo'
+        config-staging: 'bar'
+        environment: ${{ matrix.env }}
+
+  test_failure:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./
+      continue-on-error: true
+      id: fail-step
+      with:
+        config-production: 'foo'
+        config-staging: 'bar'
+        environment: stage
+    - if: steps.fail-step.outcome == 'success'
+      run: exit 1
