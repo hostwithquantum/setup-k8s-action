@@ -24,7 +24,7 @@ runs:
     if: (inputs.environment != 'production' && inputs.environment != 'staging')
   - uses: yokawasa/action-setup-kube-tools@v0.11.2
     with:
-      kubectl: '1.27.5'
+      kubectl: '1.31.2'
       # supports env vars > to secrets/configs
       kustomize: '4.5.7'
       setup-tools: |
