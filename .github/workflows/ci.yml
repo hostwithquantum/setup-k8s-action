@@ -6,7 +6,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: asdf-vm/actions/install@v4
       with:
         tool_versions: |
@@ -25,7 +25,7 @@ jobs:
         - production
         - staging
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./
       with:
         config-production: 'foo'
@@ -36,7 +36,7 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: ./
       continue-on-error: true
       id: fail-step
