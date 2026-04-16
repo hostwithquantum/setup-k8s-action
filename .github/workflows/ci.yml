@@ -42,8 +42,38 @@ jobs:
         persist-credentials: false
     - uses: ./
       with:
-        config-production: 'foo'
-        config-staging: 'bar'
+        config-production: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
+        config-staging: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
         environment: ${{ matrix.env }}
 
   test_failure:
@@ -57,8 +87,38 @@ jobs:
       continue-on-error: true
       id: fail-step
       with:
-        config-production: 'foo'
-        config-staging: 'bar'
+        config-production: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
+        config-staging: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
         environment: stage
     - if: steps.fail-step.outcome == 'success'
       run: exit 1
