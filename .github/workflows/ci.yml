@@ -24,6 +24,7 @@ jobs:
     - run: asdf reshim action-validator
     - run: action-validator ./action.yml
     - run: action-validator ./.github/workflows/ci.yml
+    - run: action-validator ./.github/workflows/release.yml
     - uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
 
   test:
@@ -41,8 +42,38 @@ jobs:
         persist-credentials: false
     - uses: ./
       with:
-        config-production: 'foo'
-        config-staging: 'bar'
+        config-production: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
+        config-staging: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
         environment: ${{ matrix.env }}
 
   test_failure:
@@ -56,8 +87,38 @@ jobs:
       continue-on-error: true
       id: fail-step
       with:
-        config-production: 'foo'
-        config-staging: 'bar'
+        config-production: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
+        config-staging: |
+          apiVersion: v1
+          kind: Config
+          current-context: default
+          contexts:
+          - name: default
+            context:
+              cluster: test
+              user: test
+          clusters:
+          - name: test
+            cluster:
+              server: https://localhost:6443
+          users:
+          - name: test
+            user: {}
         environment: stage
     - if: steps.fail-step.outcome == 'success'
       run: exit 1
