@@ -1,0 +1,3 @@
+rules:
+  github-env:
+    disable: true
