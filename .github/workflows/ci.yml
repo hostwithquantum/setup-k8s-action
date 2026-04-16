@@ -24,6 +24,7 @@ jobs:
     - run: asdf reshim action-validator
     - run: action-validator ./action.yml
     - run: action-validator ./.github/workflows/ci.yml
+    - run: action-validator ./.github/workflows/release.yml
     - uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
 
   test:
