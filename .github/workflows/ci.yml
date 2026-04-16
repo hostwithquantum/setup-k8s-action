@@ -1,19 +1,30 @@
 name: ci
 
-on: pull_request
+on:
+  pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
     steps:
-    - uses: actions/checkout@v6
-    - uses: asdf-vm/actions/install@v4
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      with:
+        persist-credentials: false
+    - uses: asdf-vm/actions/install@b7bcd026f18772e44fe1026d729e1611cc435d47 # v4
       with:
         tool_versions: |
           action-validator 0.5.1
     - run: asdf reshim action-validator
     - run: action-validator ./action.yml
     - run: action-validator ./.github/workflows/ci.yml
+    - uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
 
   test:
     needs: lint
@@ -25,7 +36,9 @@ jobs:
         - production
         - staging
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      with:
+        persist-credentials: false
     - uses: ./
       with:
         config-production: 'foo'
@@ -36,7 +49,9 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      with:
+        persist-credentials: false
     - uses: ./
       continue-on-error: true
       id: fail-step
